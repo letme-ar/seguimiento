@@ -1,0 +1,43 @@
+version: '3'
+services:
+  nginx:
+    image: pollitofive/nginx
+    ports:
+      - "8080:80"
+    volumes:
+      - ./seguimiento:/var/www/html
+    networks:
+      - seguimiento
+  php:
+    image: pollitofive/php
+    volumes:
+      - ./seguimiento:/var/www/html
+    networks:
+      - seguimiento
+  mysql:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: cuervo33
+      MYSQL_DATABASE: seguimiento
+      MYSQL_USER: root
+      MYSQL_PASSWORD: 123456
+    ports:
+      - "33060:3306"
+    volumes:
+      - mysqldata:/var/lib/mysql
+    networks:
+      - seguimiento
+  redis:
+    image: redis:alpine
+    volumes:
+      - redisdata:/data
+    networks:
+      - seguimiento
+networks:
+  seguimiento:
+    driver: "bridge"
+volumes:
+  redisdata:
+    driver: "local"
+  mysqldata:
+    driver: "local"
