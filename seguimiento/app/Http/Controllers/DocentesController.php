@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Docente;
 use App\Repositories\RepoDocentes;
 use App\Validations\ValiDocentes;
 use Illuminate\Http\Request;
@@ -23,14 +24,21 @@ class DocentesController extends Controller
 
     public function create()
     {
-        return view("docentes.form");
+        $docente = $this->repoDocentes->getModel();
+        return view("docentes.form",compact('docente'));
     }
 
     public function store(Request $request)
     {
-        $request->validate(ValiDocentes::getRules());
-        $this->repoDocentes->create($request);
+        $validaciones = new ValiDocentes();
+        $validaciones->setId($request->get('id'));
+        $request->validate($validaciones->getRules());
+        $this->repoDocentes->save($request);
         return redirect('docentes')->with('message', 'Guardado correctamente');
+    }
 
+    public function edit(Docente $docente)
+    {
+        return view("docentes.form",compact('docente'));
     }
 }

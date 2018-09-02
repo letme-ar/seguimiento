@@ -24,7 +24,7 @@
                 <td>{{ $docente->dni }}</td>
                 <td>{{ $docente->legajo }}</td>
                 <td style="width: 23%">
-                    <button class="btn btn-warning btn-sm" href="{{ route('docentes.edit',$docente->id) }}">Editar</button>
+                    <a href="{{ route('docentes.edit',$docente->id) }}"><button class="btn btn-warning btn-sm" >Editar</button></a>
                     <button class="btn btn-danger btn-sm" href="#">Desactivar</button>
                     <button class="btn btn-success btn-sm" href="#">Activar</button>
                 </td>

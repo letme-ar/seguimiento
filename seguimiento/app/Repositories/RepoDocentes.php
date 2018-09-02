@@ -10,9 +10,9 @@ class RepoDocentes implements RepoBase{
         return new Docente();
     }
 
-    public function create($request)
+    public function save($request)
     {
-        $docente = $this->getModel();
+        $docente = $this->getModel()->firstOrNew(['id' => $request->get('id')]);
         $docente->fill($request->except('_token'));
         $docente->save();
     }
