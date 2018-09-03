@@ -19,7 +19,7 @@ class RepoDocentes implements RepoBase{
 
     public function getAll()
     {
-        return $this->getModel()->paginate(10);
+        return $this->getModel()->orderBy('apellido','asc')->paginate(10);
     }
 
 

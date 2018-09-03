@@ -18,20 +18,17 @@ class DocentesController extends Controller
 
     public function index()
     {
-        $docentes = $this->repoDocentes->getAll();
-        return view("docentes.index",compact('docentes'));
+        return view("docentes.index",['docentes' => $this->repoDocentes->getAll()]);
     }
 
     public function create()
     {
-        $docente = $this->repoDocentes->getModel();
-        return view("docentes.form",compact('docente'));
+        return view("docentes.form",['docente' => $this->repoDocentes->getModel()]);
     }
 
     public function store(Request $request)
     {
-        $validaciones = new ValiDocentes();
-        $validaciones->setId($request->get('id'));
+        $validaciones = new ValiDocentes($request->get('id'));
         $request->validate($validaciones->getRules());
         $this->repoDocentes->save($request);
         return redirect('docentes')->with('message', 'Guardado correctamente');

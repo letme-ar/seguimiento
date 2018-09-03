@@ -6,7 +6,7 @@ class ValiDocentes implements ValiBase{
 
     private $id;
 
-    public function setId($id)
+    public function __construct($id)
     {
         $this->id = $id;
     }
