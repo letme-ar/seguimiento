@@ -15,11 +15,12 @@ class RepoDocentes implements RepoBase{
         $docente = $this->getModel()->firstOrNew(['id' => $request->get('id')]);
         $docente->fill($request->except('_token'));
         $docente->save();
+        return $docente;
     }
 
     public function getAll()
     {
-        return $this->getModel()->paginate(10);
+        return $this->getModel()->orderBy('apellido','asc')->paginate(10);
     }
 
 

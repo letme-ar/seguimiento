@@ -20,10 +20,15 @@ class CreateUsersTable extends Migration
             $table->string('dni')->unique();
             $table->string('email')->unique();
             $table->string('password');
-            $table->enum('tipo_usuario',[1,2,3]);
+            $table->tinyInteger('tipo_usuario')->unsigned();
+            $table->integer('docente_id')->unsigned()->nullable();
+            $table->integer('user_creator_id')->unsigned();
+            $table->tinyInteger('status');//1 => Habilitado, 0 => Deshabilitado
             $table->rememberToken();
             $table->timestamps();
             $table->softDeletes();
+
+
         });
     }
 

@@ -1,5 +1,17 @@
 @extends('layouts.app')
 
+@section('scripts')
+
+<style>
+    
+    .defused{
+        background-color: red;
+        color: white;
+    }
+    
+</style>    
+    
+@endsection    
 @section('content')
     @include('components.message-confirmation')
     <a href="{!! route('docentes.create')!!}"><button class="btn btn-success pull-right">Agregar</button></a>
@@ -17,7 +29,11 @@
         </thead>
         <tbody>
             @forelse($docentes as $docente)
-            <tr>
+            @if($docente->user->status)
+            <tr >
+            @else
+            <tr class="defused">
+            @endif
                 <td>{{ $docente->nombre }}</td>
                 <td>{{ $docente->apellido }}</td>
                 <td>{{ $docente->email }}</td>
@@ -25,8 +41,11 @@
                 <td>{{ $docente->legajo }}</td>
                 <td style="width: 23%">
                     <a href="{{ route('docentes.edit',$docente->id) }}"><button class="btn btn-warning btn-sm" >Editar</button></a>
-                    <button class="btn btn-danger btn-sm" href="#">Desactivar</button>
-                    <button class="btn btn-success btn-sm" href="#">Activar</button>
+                    @if($docente->user->status)
+                        <a href="{{ route('docentes.defuse',$docente->id) }}"><button class="btn btn-danger btn-sm" href="#">Desactivar</button></a>
+                    @else
+                        <a href="{{ route('docentes.activate',$docente->id) }}"><button class="btn btn-success btn-sm" href="#">Activar</button></a>
+                    @endif
                 </td>
             </tr>
             @empty
