@@ -1,7 +1,7 @@
 version: '3'
 services:
   nginx:
-    image: pollitofive/nginx
+    image: pollitofive/nginx:1.0.0
     ports:
       - "8080:80"
     volumes:
@@ -9,7 +9,7 @@ services:
     networks:
       - seguimiento
   php:
-    image: pollitofive/php
+    image: pollitofive/php:1.0.0
     volumes:
       - ./seguimiento:/var/www/html
     networks:

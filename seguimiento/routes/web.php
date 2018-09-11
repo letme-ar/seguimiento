@@ -16,9 +16,12 @@ Route::get('/', function () {
 });
 
 Auth::routes();
+Route::post('login', 'Auth\LoginController@authenticate')->name('login');
 
 Route::group(['middleware' => 'auth'],function(){
     Route::resource('docentes','DocentesController');
+    Route::get('docentes.defuse/{docente}',['as' => 'docentes.defuse','uses' => 'DocentesController@defuse']);
+    Route::get('docentes.activate/{docente}',['as' => 'docentes.activate','uses' => 'DocentesController@activate']);
     Route::get('/home', 'HomeController@index')->name('home');
 });
 

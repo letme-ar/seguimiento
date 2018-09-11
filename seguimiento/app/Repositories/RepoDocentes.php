@@ -15,6 +15,7 @@ class RepoDocentes implements RepoBase{
         $docente = $this->getModel()->firstOrNew(['id' => $request->get('id')]);
         $docente->fill($request->except('_token'));
         $docente->save();
+        return $docente;
     }
 
     public function getAll()

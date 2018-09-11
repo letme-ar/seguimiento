@@ -18,7 +18,10 @@ class UsersSeeder extends Seeder
             'dni' => '11111111',
             'tipo_usuario' => 1,
             'password' => Hash::make('123456'),
-            'email' => 'damianladiani@gmail.com'
+            'email' => 'damianladiani@gmail.com',
+            'docente_id' => null,
+            'user_creator_id' => 1,
+            'status' => 1,
         ]);
 
         User::create([
@@ -27,7 +30,10 @@ class UsersSeeder extends Seeder
             'dni' => '22222222',
             'tipo_usuario' => 1,
             'password' => Hash::make('123456'),
-            'email' => 'msarfernandez@gmail.com'
+            'email' => 'msarfernandez@gmail.com',
+            'docente_id' => null,
+            'user_creator_id' => 1,
+            'status' => 1,
         ]);
     }
 }
