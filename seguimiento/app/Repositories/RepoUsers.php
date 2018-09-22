@@ -25,10 +25,12 @@ class RepoUsers implements RepoBase
            'user_creator_id' => \Auth::user()->id,
            'tipo_usuario' => 2,
            'password' => \Hash::make($docente->legajo),
-           'status' => 1,
+           'status' => $user->exists ? $user->status : 1,
         ]);
+        $user->save();
 
-        return $user->save();
+        //$count ? $count : 10;
+        return $user;
 
     }
 
@@ -37,6 +39,7 @@ class RepoUsers implements RepoBase
         $user = $this->getModel()->where('docente_id',$docente_id)->first();
         $user->status = 0;
         $user->save();
+        return $user;
     }
 
     public function activate($docente_id)
@@ -44,6 +47,7 @@ class RepoUsers implements RepoBase
         $user = $this->getModel()->where('docente_id',$docente_id)->first();
         $user->status = 1;
         $user->save();
+        return $user;
     }
 
 }

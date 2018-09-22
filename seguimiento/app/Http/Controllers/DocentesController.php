@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\MailWelcome;
 use App\Models\Docente;
 use App\Repositories\RepoDocentes;
 use App\Repositories\RepoUsers;
 use App\Validations\ValiDocentes;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 class DocentesController extends Controller
 {
@@ -22,7 +24,6 @@ class DocentesController extends Controller
     public function index()
     {
         $docentes = $this->repoDocentes->getAll();
-//        dd($docentes[0]->user->status);
         return view("docentes.index",compact('docentes'));
     }
 
@@ -38,7 +39,12 @@ class DocentesController extends Controller
         $validations->setId($request->get('id'));
         $request->validate($validations->getRules());
         $docente = $this->repoDocentes->save($request);
-        $this->repoUsers->save($docente);
+        $user = $this->repoUsers->save($docente);
+
+        if ($user->wasRecentlyCreated)
+            Mail::to($user->email,$user->nombre_apellido)->send(new MailWelcome($user));
+
+
         return redirect('docentes')->with('message', 'Guardado correctamente');
     }
 
@@ -49,13 +55,15 @@ class DocentesController extends Controller
 
     public function defuse(Docente $docente)
     {
-        $this->repoUsers->defuse($docente->id);
+        $user = $this->repoUsers->defuse($docente->id);
+        Mail::to($user->email,$user->nombre_apellido)->send(new MailWelcome($user));
         return redirect('docentes')->with('message', 'Guardado correctamente');
     }
 
     public function activate(Docente $docente)
     {
-        $this->repoUsers->activate($docente->id);
+        $user = $this->repoUsers->activate($docente->id);
+        Mail::to($user->email,$user->nombre_apellido)->send(new MailWelcome($user));
         return redirect('docentes')->with('message', 'Guardado correctamente');
     }
 }
