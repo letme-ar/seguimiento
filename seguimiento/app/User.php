@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Models\Docente;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
@@ -9,6 +10,7 @@ class User extends Authenticatable
 {
     use Notifiable;
 
+    protected $fillable = ['nombre'];
 //    protected $guarded = [];
 
     /**
@@ -20,8 +22,15 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
-    public function getNombreApellido()
+    public function getNombreApellidoAttribute()
     {
         return $this->attributes['nombre']." ".$this->attributes['apellido'];
     }
+
+    public function docente()
+    {
+        return $this->hasOne(Docente::class,'id','docente_id');
+    }
+
+
 }

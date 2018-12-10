@@ -3,13 +3,14 @@ services:
   nginx:
     image: pollitofive/nginx:1.0.0
     ports:
-      - "8080:80"
+      - "8080:80q
+"
     volumes:
       - ./seguimiento:/var/www/html
     networks:
       - seguimiento
   php:
-    image: pollitofive/php:1.0.0
+    image: pollitofive/php
     volumes:
       - ./seguimiento:/var/www/html
     networks:
@@ -22,7 +23,7 @@ services:
       MYSQL_USER: root
       MYSQL_PASSWORD: 123456
     ports:
-      - "33061:3306"
+      - "33060:3306"
     volumes:
       - mysqldata:/var/lib/mysql
     networks:
