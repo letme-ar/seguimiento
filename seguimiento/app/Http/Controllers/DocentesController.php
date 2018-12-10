@@ -22,8 +22,6 @@ class DocentesController extends Controller
     public function index()
     {
         $lista = $this->repoDocentes->getAll();
-
-        dd($lista[0]->user);
         return view("docentes.index",['docentes' => $this->repoDocentes->getAll()]);
     }
 
