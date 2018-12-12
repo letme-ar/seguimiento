@@ -15,8 +15,12 @@ class CreateTableMaterias extends Migration
     {
         Schema::create('materias',function(Blueprint $table){
             $table->increments('id');
-            $table->string('descripcion',100);
             $table->integer('carrera_id')->unsigned();
+            $table->string('descripcion',100);
+            $table->smallInteger('horas_semanales')->unisgned();
+            $table->smallInteger('cuatrimestre')->unisgned();
+            $table->smallInteger('anio')->unisgned();
+            $table->smallInteger('horas_cuatrimestrales')->unisgned();
             $table->timestamps();
             $table->softDeletes();
 

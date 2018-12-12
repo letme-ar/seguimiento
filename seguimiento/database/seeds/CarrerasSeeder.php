@@ -4,7 +4,7 @@ use \App\Models\Carrera;
 use \App\Models\Materia;
 use Illuminate\Database\Seeder;
 
-class CarrerasMateriasSeeder extends Seeder
+class CarrerasSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -13,6 +13,7 @@ class CarrerasMateriasSeeder extends Seeder
      */
     public function run()
     {
+        /*
         $carreras = factory(Carrera::class, 5)->create();
 
         $carreras->each(function(Carrera $carrera) use ($carreras) {
@@ -22,5 +23,16 @@ class CarrerasMateriasSeeder extends Seeder
                     'carrera_id' => $carrera->id,
                 ]);
         });
+        */
+
+        Carrera::create([
+           'descripcion' => 'Técnico superior en programación',
+            'abreviacion' => 'TSP'
+        ]);
+        Carrera::create([
+            'descripcion' => 'Técnico superior en sistemas informáticos',
+            'abreviacion' => 'TSSI'
+        ]);
+
     }
 }
