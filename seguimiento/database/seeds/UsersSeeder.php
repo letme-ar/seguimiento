@@ -22,6 +22,7 @@ class UsersSeeder extends Seeder
             'docente_id' => null,
             'user_creator_id' => 1,
             'status' => 1,
+            'change_password' => 0
         ]);
 
         User::create([
@@ -34,6 +35,7 @@ class UsersSeeder extends Seeder
             'docente_id' => null,
             'user_creator_id' => 1,
             'status' => 1,
+            'change_password' => 0
         ]);
     }
 }

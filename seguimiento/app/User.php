@@ -10,7 +10,7 @@ class User extends Authenticatable
 {
     use Notifiable;
 
-    protected $fillable = ['nombre','apellido','dni','email','docente_id','user_creator_id','tipo_usuario','password','status'];
+    protected $fillable = ['nombre','apellido','dni','email','docente_id','user_creator_id','tipo_usuario','password','status','password_change'];
 //    protected $guarded = [];
 
     /**
@@ -30,6 +30,14 @@ class User extends Authenticatable
     public function docente()
     {
         return $this->hasOne(Docente::class,'id','docente_id');
+    }
+
+    public function changePassword($new_password)
+    {
+        $this->attributes['password'] = \Hash::make($new_password);
+        $this->attributes['change_password'] = 0;
+        $this->save();
+
     }
 
 

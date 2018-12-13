@@ -28,6 +28,8 @@ class RepoUsers implements RepoBase
            'tipo_usuario' => 2,
            'password' => \Hash::make($docente->legajo),
            'status' => $user->exists ? $user->status : 1,
+           'change_password' => 1
+
         ]);
 //        dd($docente);
         $user->save();
@@ -52,5 +54,11 @@ class RepoUsers implements RepoBase
         $user->save();
         return $user;
     }
+
+    public function updatePassword()
+    {
+
+    }
+
 
 }
