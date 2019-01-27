@@ -3,15 +3,30 @@
 @section('scripts')
 
 <style>
-    
+
     .defused{
         background-color: red;
         color: white;
     }
-    
-</style>    
-    
-@endsection    
+
+    .no-gutter {
+        padding:0;
+    }
+
+    .inline-block {
+        display: inline-block;
+    }
+
+</style>
+<script>
+    // $(document).ready(function(){
+    //     $('[data-toggle="tooltip"]').tooltip()
+    // });
+
+</script>
+
+
+@endsection
 @section('content')
     @include('components.message-confirmation')
     <a href="{!! route('docentes.create')!!}"><button class="btn btn-success pull-right">Agregar</button></a>
@@ -39,12 +54,21 @@
                 <td>{{ $docente->email }}</td>
                 <td>{{ $docente->dni }}</td>
                 <td>{{ $docente->legajo }}</td>
-                <td style="width: 23%">
-                    <a href="{{ route('docentes.edit',$docente->id) }}"><button class="btn btn-warning btn-sm" >Editar</button></a>
+                <td>
+                    <a href="{{ route('docentes.edit',$docente->id) }}"><span class="oi oi-pencil" title="Editar" data-toggle="tooltip" data-placement="top"></span></a>
                     @if($docente->user->status)
-                        <a href="{{ route('docentes.defuse',$docente->id) }}"><button class="btn btn-danger btn-sm" href="#">Desactivar</button></a>
+                        <form action="{{ route('users.defuse', $docente->id) }}" method="POST" class="inline-block">
+                            {{ csrf_field() }}
+                            {{ method_field('DELETE') }}
+                            <button type="submit" class="btn btn-link no-gutter"><span class="oi oi-trash"></span></button>
+                        </form>
+{{--                        <a href="{{ route('docentes.defuse',$docente->id) }}"><span class="oi oi-circle-x" title="Deshabilitar"></span></a>--}}
                     @else
-                        <a href="{{ route('docentes.activate',$docente->id) }}"><button class="btn btn-success btn-sm" href="#">Activar</button></a>
+                        <form action="{{ route('users.activate', $docente->id) }}" method="POST" class="inline-block">
+                            {{ csrf_field() }}
+                            {{ method_field('PUT') }}
+                            <button type="submit" class="btn btn-link no-gutter"><span class="oi oi-circle-check"></span></button>
+                        </form>
                     @endif
                 </td>
             </tr>

@@ -5,17 +5,16 @@
     </button>
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        @if(Auth::user()->tipo_usuario == 1)
-        <ul class="navbar-nav mr-auto">
-            <li class="nav-item active">
-                <a class="nav-link" href="/docentes">Docentes <span class="sr-only">(current)</span></a>
-            </li>
-        </ul>
-        @endif
-        <ul class="navbar-nav ml-auto">
-            <!-- Authentication Links -->
-            @guest
-                @else
+
+        @if(Auth::check())
+            @if(Auth::user()->tipo_usuario == 1)
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="/docentes">Docentes <span class="sr-only">(current)</span></a>
+                    </li>
+                </ul>
+            @endif
+                <ul class="navbar-nav ml-auto">
                     <li class="nav-item dropdown">
                         <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                             {{ Auth::user()->nombre_apellido }} <span class="caret"></span>
@@ -27,7 +26,7 @@
                             </a>
                             <a class="dropdown-item" href="{{ route('logout') }}"
                                onclick="event.preventDefault();
-                                                     document.getElementById('logout-form').submit();">
+                                                         document.getElementById('logout-form').submit();">
                                 {{ __('Cerrar sesión') }}
                             </a>
 
@@ -36,7 +35,7 @@
                             </form>
                         </div>
                     </li>
-                    @endguest
-        </ul>
+                </ul>
+        @endif
     </div>
 </nav>
