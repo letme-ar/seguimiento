@@ -15,7 +15,7 @@ class AddForeignTableUsers extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->foreign('docente_id')->references('id')->on('docentes');
-            $table->foreign('user_creator_id')->references('id')->on('users');
+//            $table->foreign('user_creator_id')->references('id')->on('users');
         });
     }
 
@@ -28,7 +28,7 @@ class AddForeignTableUsers extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->dropForeign('users_docente_id_foreign');
-            $table->dropForeign('users_user_creator_id_foreign');
+//            $table->dropForeign('users_user_creator_id_foreign');
         });
     }
 }

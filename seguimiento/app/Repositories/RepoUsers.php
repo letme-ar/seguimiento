@@ -16,25 +16,29 @@ class RepoUsers implements RepoBase
     {
         $user = $this->getModel()->firstOrNew(['docente_id' => $docente->id]);
 
-//        dd($user);
+        $user = $this->fillUser($user,$docente);
 
-        $user->fill([
-           'nombre' => $docente->nombre,
-           'apellido' => $docente->apellido,
-           'dni' => $docente->dni,
-           'email' => $docente->email,
-           'docente_id' => $docente->id,
-           'user_creator_id' => \Auth::user()->id,
-           'tipo_usuario' => 2,
-           'password' => \Hash::make($docente->legajo),
-           'status' => $user->exists ? $user->status : 1,
-           'change_password' => 1
-
-        ]);
-//        dd($docente);
         $user->save();
 
-        //$count ? $count : 10;
+        return $user;
+    }
+
+    private function fillUser(User $user,Docente $docente)
+    {
+        $user->fill([
+            'nombre' => $docente->nombre,
+            'apellido' => $docente->apellido,
+            'dni' => $docente->dni,
+            'email' => $docente->email,
+            'docente_id' => $docente->id,
+            'user_creator_id' => \Auth::user()->id,
+            'tipo_usuario' => 2,
+            'password' => \Hash::make($docente->legajo),
+            'status' => $user->exists ? $user->status : 1,
+            'password_change' => 1
+
+        ]);
+
         return $user;
 
     }

@@ -24,7 +24,7 @@ class CreateUsersTable extends Migration
             $table->integer('docente_id')->unsigned()->nullable();
             $table->integer('user_creator_id')->unsigned();
             $table->tinyInteger('status');//1 => Habilitado, 0 => Deshabilitado
-            $table->tinyInteger('change_password');//1 => debe cambiarlo, 0 => No debe cambiarlo
+            $table->tinyInteger('password_change');//1 => debe cambiarlo, 0 => No debe cambiarlo
             $table->rememberToken();
             $table->timestamps();
             $table->softDeletes();

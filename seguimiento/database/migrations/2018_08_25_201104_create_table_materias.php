@@ -17,6 +17,7 @@ class CreateTableMaterias extends Migration
             $table->increments('id');
             $table->integer('carrera_id')->unsigned();
             $table->string('descripcion',100);
+            $table->string('abreviatura',10);
             $table->smallInteger('horas_semanales')->unisgned();
             $table->smallInteger('cuatrimestre')->unisgned();
             $table->smallInteger('anio')->unisgned();

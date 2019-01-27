@@ -17,7 +17,7 @@ class CheckChangePassword
     {
         if(\Auth::check())
         {
-            if ($request->user()->change_password == 1)
+            if ($request->user()->password_change == 1)
             {
 //                return response(redirect('change-password'));
                 $user = $request->user();

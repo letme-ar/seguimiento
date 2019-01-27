@@ -35,10 +35,11 @@ class User extends Authenticatable
     public function changePassword($new_password)
     {
         $this->attributes['password'] = \Hash::make($new_password);
-        $this->attributes['change_password'] = 0;
+        $this->attributes['password_change'] = 0;
         $this->save();
 
     }
+
 
 
 }
