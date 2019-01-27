@@ -1,7 +1,6 @@
 <?php
 
 use \App\Models\Carrera;
-use \App\Models\Materia;
 use Illuminate\Database\Seeder;
 
 class CarrerasSeeder extends Seeder
