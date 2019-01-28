@@ -1,0 +1,12 @@
+seguimiento/node_modules
+seguimiento/public/hot
+seguimiento/public/storage
+seguimiento/storage/*.key
+seguimiento/vendor
+/.idea/*
+seguimiento/.vscode
+seguimiento/.vagrant
+seguimiento/npm-debug.log
+seguimiento/yarn-error.log
+seguimiento/.env
+seguimiento/.phpunit.result.cache

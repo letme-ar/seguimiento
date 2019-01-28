@@ -10,7 +10,7 @@
             @if(Auth::user()->tipo_usuario == 1)
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item active">
-                        <a class="nav-link" href="/docentes">Docentes <span class="sr-only">(current)</span></a>
+                        <a class="nav-link" href="{{ route('docentes.index') }}">Docentes <span class="sr-only">(current)</span></a>
                     </li>
                 </ul>
             @endif
