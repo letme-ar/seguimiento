@@ -32,15 +32,12 @@ class ChangePasswordController extends Controller
         $validations = new ValiChangePassword();
         $request->validate($validations->getRules(),$validations->getMessages());
 
-        $user = $this->repoUsers->getModel()->find(\Auth::user()->id);
-        $current_password = $user->password;
-
-        if (!\Hash::check($request->get('password'), $current_password))
+        if (!\Hash::check($request->get('password'), auth()->user()->current_password))
         {
             return redirect()->back()->withErrors(['password'=>'El password ingresado es incorrecto']);
         }
 
-        $user->changePassword($request->get('new_password'));
+        auth()->user()->changePassword($request->get('new_password'));
 
         return redirect('/')->with('message', 'Guardado correctamente');
 
