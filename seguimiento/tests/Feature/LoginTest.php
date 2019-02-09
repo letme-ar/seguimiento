@@ -42,7 +42,7 @@ class LoginTest extends TestCase
             'email' => '',
             'password' => 'dsadadas'
         ])
-            ->assertSessionHasErrors(['email']);
+        ->assertSessionHasErrors(['email']);
     }
 
     public function test_email_wrong()
@@ -51,7 +51,7 @@ class LoginTest extends TestCase
             'email' => 'dsasdasdadasdadas',
             'password' => 'dsadadas'
         ])
-            ->assertSessionHasErrors(['email']);
+        ->assertSessionHasErrors(['email']);
     }
 
     public function test_email_doesnt_exist()
@@ -60,7 +60,7 @@ class LoginTest extends TestCase
             'email' => 'damianladiani@github.com',
             'password' => '123456'
         ])
-            ->assertSessionHasErrors(['email']);
+        ->assertSessionHasErrors(['email']);
     }
 
 }

@@ -2,8 +2,31 @@
 
 namespace App\Repositories;
 
-interface RepoBase{
+use Illuminate\Database\Eloquent\Model;
 
-    public function getModel();
+abstract class RepoBase{
+
+    public function getModel()
+    {
+        //
+    }
+
+    public function save($request)
+    {
+        $model = $this->getModel()->firstOrNew(['id' => $request->get('id')]);
+        $model->fill($request->except('_token'));
+        $model->save();
+        return $model;
+    }
+
+    public function make($request)
+    {
+        $model = $this->getModel()->firstOrNew(['id' => $request->get('id')]);
+        $model->fill($request->except('_token'));
+        $model->make();
+        return $model;
+    }
+
+
 
 }

@@ -5,14 +5,14 @@ namespace App\Repositories;
 use App\Models\Docente;
 use App\User;
 
-class RepoUsers implements RepoBase
+class RepoUsers extends RepoBase
 {
     public function getModel()
     {
         return new User();
     }
 
-    public function save(Docente $docente)
+    public function guardar(Docente $docente)
     {
         $user = $this->getModel()->firstOrNew(['docente_id' => $docente->id]);
 
