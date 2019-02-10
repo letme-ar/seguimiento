@@ -10,26 +10,24 @@ class ResetPasswordTest extends TestCase
 {
     use RefreshDatabase;
 
-    /**
-     * A basic test example.
-     *
-     * @return void
-     */
-    public function test_see_correct_page()
+    /** @test */
+    function i_see_the_correct_page()
     {
         $this->get('password/reset')
             ->assertSee('Restaurar contraseña')
             ->assertSee('E-Mail');
     }
 
-    public function test_send_correct_email()
+    /** @test */
+    function i_send_a_correct_email()
     {
         $this->post('password/email',[
             'email' => 'damianladiani@gmail.com',
         ])->assertRedirect('/');
     }
 
-    public function test_email_empty()
+    /** @test */
+    function i_send_an_email_empty()
     {
         $this->post('password/email',[
             'email' => '',
@@ -37,7 +35,8 @@ class ResetPasswordTest extends TestCase
             ->assertSessionHasErrors(['email']);
     }
 
-    public function test_email_wrong()
+    /** @test */
+    function i_send_an_email_wrong()
     {
         $this->post('password/email',[
             'email' => 'damianladiani@gmail.com11',

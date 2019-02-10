@@ -12,7 +12,7 @@ class ModuleUsersTest extends TestCase
     use RefreshDatabase;
 
     /** @test */
-    public function it_try_refuse_user()
+    public function i_try_to_refuse_user()
     {
         $this->generateUserAndLogin();
 
@@ -28,7 +28,7 @@ class ModuleUsersTest extends TestCase
     }
 
     /** @test */
-    public function it_try_activate_user()
+    public function i_try_to_activate_user()
     {
         $this->generateUserAndLogin();
 
@@ -47,6 +47,8 @@ class ModuleUsersTest extends TestCase
 
     function i_can_change_the_password()
     {
+        $this->withoutExceptionHandling();
+
         $user = $this->generateUserAndLogin();
         $user->changePassword('123456');
 

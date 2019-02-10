@@ -10,31 +10,28 @@ namespace App\Http\Controllers;
 
 
 use App\Mail\MailWelcome;
-use App\Repositories\RepoUsers;
+use App\Models\Docente;
 use App\User;
 use Illuminate\Support\Facades\Mail;
 
 class UsersController extends Controller
 {
-    private $repoUsers;
 
-    public function __construct(RepoUsers $repoUsers)
+    public function destroy(Docente $docente)
     {
-        $this->repoUsers = $repoUsers;
-    }
+        $docente->user->defuse();
 
+        Mail::to($docente->user->email,$docente->user->nombre_apellido)->send(new MailWelcome($docente->user));
 
-    public function destroy($docente_id)
-    {
-        $user = $this->repoUsers->defuse($docente_id);
-        Mail::to($user->email,$user->nombre_apellido)->send(new MailWelcome($user));
         return redirect('docentes')->with('message', 'Guardado correctamente');
     }
 
-    public function activate($docente_id)
+    public function activate(Docente $docente)
     {
-        $user = $this->repoUsers->activate($docente_id);
-        Mail::to($user->email,$user->nombre_apellido)->send(new MailWelcome($user));
+        $docente->user->defuse();
+
+        Mail::to($docente->user->email,$docente->user->nombre_apellido)->send(new MailWelcome($docente->user));
+
         return redirect('docentes')->with('message', 'Guardado correctamente');
     }
 }

@@ -29,7 +29,7 @@ class User extends Authenticatable
 
     public function docente()
     {
-        return $this->hasOne(Docente::class,'id','docente_id');
+        return $this->belongsTo(Docente::class);
     }
 
     public function changePassword($new_password)
@@ -39,6 +39,38 @@ class User extends Authenticatable
         $this->save();
 
     }
+
+    /*public function fillUser(Docente $docente)
+    {
+        $this->fill([
+            'nombre' => $docente->nombre,
+            'apellido' => $docente->apellido,
+            'dni' => $docente->dni,
+            'email' => $docente->email,
+            'docente_id' => $docente->id,
+            'user_creator_id' => auth()->user()->id,
+            'tipo_usuario' => 2,
+            'password' => \Hash::make($docente->legajo),
+            'status' => $user->exists ? $user->status : 1,
+            'password_change' => 1
+
+        ]);
+
+    }*/
+
+    public function defuse()
+    {
+        $this->attributes['status'] = 0;
+        $this->save();
+    }
+
+    public function activate()
+    {
+        $this->attributes['status'] = 1;
+        $this->save();
+    }
+
+
 
 
 

@@ -12,13 +12,31 @@ Route::get('/', function () {
     return view('home');
 });
 
+///////////////////////* Docentes */////////////////////////////
 
 Route::resource('docentes','DocentesController');
 
+Route::get('docentes/show/{docente}-{url}', [
+    'as' => 'docentes.show',
+    'uses' => 'DocentesController@show'
+]);
+
+Route::get('docentes/edit/{docente}-{url}', [
+    'as' => 'docentes.edit',
+    'uses' => 'DocentesController@edit'
+]);
+
+Route::post('docentes/{docente}/update',[
+   'as' => 'docentes.update',
+   'uses' => 'DocentesController@update'
+]);
+
+//////////////////////////* End Docentes *//////////////////////////////
+
 Route::resource('cursos','CursosController');
 
-Route::put('/users/{docente_id}','UsersController@activate')->name('users.activate');
-Route::delete('/users/{docente_id}','UsersController@destroy')->name('users.defuse');
+Route::put('/users/{docente}','UsersController@activate')->name('users.activate');
+Route::delete('/users/{docente}','UsersController@destroy')->name('users.defuse');
 
 Route::get('/home', 'HomeController@index')->name('home');
 
