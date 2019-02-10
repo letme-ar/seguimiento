@@ -4,55 +4,118 @@ namespace App\Http\Controllers;
 
 use App\Mail\MailWelcome;
 use App\Models\Docente;
-use App\Repositories\RepoDocentes;
-use App\Repositories\RepoUsers;
+use App\User;
 use App\Validations\ValiDocentes;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 
 class DocentesController extends Controller
 {
-    private $repoDocentes;
-    private $repoUsers;
+    private $valiDocentes;
 
-    public function __construct(RepoDocentes $repoDocentes,RepoUsers $repoUsers)
+    public function __construct(ValiDocentes $valiDocentes)
     {
-        $this->repoDocentes = $repoDocentes;
-        $this->repoUsers = $repoUsers;
+        $this->valiDocentes = $valiDocentes;
     }
+
 
     public function index()
     {
-        $docentes = $this->repoDocentes->getAll();
-//        dd(\Auth::user());
+        $docentes = Docente::orderBy('apellido','asc')->paginate(env('APP_PAGINATE',10));
+
         return view("docentes.index",compact('docentes'));
     }
 
     public function create()
     {
-        return view("docentes.form",['docente' => $this->repoDocentes->getModel()]);
+        $docente = new Docente();
+        return view("docentes.form",['docente' => $docente]);
+    }
+
+    public function show(Docente $docente,$url)
+    {
+        return view("docentes.show",compact('docente'));
     }
 
     public function store(Request $request)
     {
-        $validations = new ValiDocentes($request->get('id'));
+        $request->validate($this->valiDocentes->getRules());
 
-        $request->validate($validations->getRules());
+        $docente = new Docente($request->all());
 
-        $docente = $this->repoDocentes->save($request);
+        $docente->save();
 
-        $user = $this->repoUsers->save($docente);
+        $user = $this->fillCreateUser($docente);
 
-        if ($user->wasRecentlyCreated)
-            Mail::to($user->email,$user->nombre_apellido)->send(new MailWelcome($user));
+        $user->save();
 
+        $this->SendMailWelcome($user);
 
         return redirect('docentes')->with('message', 'Guardado correctamente');
     }
 
-    public function edit(Docente $docente)
+    public function edit(Docente $docente,$url)
     {
         return view("docentes.form",compact('docente'));
+    }
+
+    public function update(Request $request,Docente $docente)
+    {
+        $this->valiDocentes->setId($docente->id);
+
+        $request->validate($this->valiDocentes->getRules());
+
+        $docente->fill($request->all())->save();
+
+        $user = $this->fillUpdateUser($docente->user,$docente);
+
+        $user->save();
+
+        return redirect('docentes')->with('message', 'Guardado correctamente');
+    }
+
+    private function fillCreateUser($docente)
+    {
+        $user = new User();
+
+        $user->fill([
+            'nombre' => $docente->nombre,
+            'apellido' => $docente->apellido,
+            'dni' => $docente->dni,
+            'email' => $docente->email,
+            'docente_id' => $docente->id,
+            'user_creator_id' => auth()->user()->id,
+            'tipo_usuario' => 2,
+            'password' => \Hash::make($docente->legajo),
+            'status' => 1,
+            'password_change' => 1
+        ]);
+
+        return $user;
+
+    }
+
+    private function fillUpdateUser($user,$docente)
+    {
+        $user->fill([
+            'nombre' => $docente->nombre,
+            'apellido' => $docente->apellido,
+            'dni' => $docente->dni,
+            'email' => $docente->email
+        ]);
+
+        return $user;
+    }
+
+    /**
+     * @param $user
+     */
+    private function SendMailWelcome($user): void
+    {
+        Mail::to(
+            $user->email,
+            $user->nombre_apellido
+        )->send(new MailWelcome($user));
     }
 
 

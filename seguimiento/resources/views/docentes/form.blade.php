@@ -14,7 +14,11 @@
 
 @section('content')
 
+    @if($docente->exists)
+    <form method="post" action="/docentes/update">
+    @else
     <form method="post" action="/docentes">
+    @endif
         @csrf
         <input type="hidden" name="id" value="{{ $docente->id or '' }}">
         <div class="card text-center">
