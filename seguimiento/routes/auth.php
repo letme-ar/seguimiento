@@ -35,6 +35,19 @@ Route::post('docentes/{docente}/update',[
 
 Route::resource('cursos','CursosController');
 
+Route::post('cursos/{curso}/update',[
+    'as' => 'curso.update',
+    'uses' => 'CursosController@update'
+]);
+
+Route::get('cursos/edit/{curso}-{slug}', [
+    'as' => 'cursos.edit',
+    'uses' => 'CursosController@edit'
+]);
+
+
+
+
 Route::put('/users/{docente}','UsersController@activate')->name('users.activate');
 Route::delete('/users/{docente}','UsersController@destroy')->name('users.defuse');
 

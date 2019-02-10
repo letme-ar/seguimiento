@@ -2,17 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Curso;
 use App\Repositories\RepoCursos;
 use App\Validations\ValiCursos;
 use Illuminate\Http\Request;
 
 class CursosController extends Controller
 {
-    private $repoCursos;
 
-    public function __construct(RepoCursos $repoCursos)
+    private $valiCursos;
+
+    public function __construct(ValiCursos $valiCursos)
     {
-        $this->repoCursos = $repoCursos;
+        $this->valiCursos = $valiCursos;
     }
 
 
@@ -28,22 +30,44 @@ class CursosController extends Controller
 
     public function store(Request $request)
     {
-        $validations = new ValiCursos();
-
         $request->merge([
             'docente_id' => \Auth::user()->docente_id,
             'slug' => '',
         ]);
 
-        $request->validate($validations->getRules());
+        $request->validate($this->valiCursos->getRules());
 
-        $model = $this->repoCursos->save($request);
+        $curso = new Curso($request->all());
 
-        $model->slug = $this->repoCursos->setSlug($model);
+        $curso->save();
 
-        $model->save();
+        $curso->setSlug();
 
         return redirect('cursos')->with('message', 'Guardado correctamente');
+    }
+
+    public function edit(Curso $curso)
+    {
+        return view('cursos.form',compact('curso'));
+    }
+
+    public function update(Request $request,Curso $curso)
+    {
+        $request->merge([
+            'docente_id' => $curso->docente_id,
+            'slug' => $curso->slug,
+        ]);
+
+        $request->validate($this->valiCursos->getRules());
+
+        $curso->fill($request->all());
+
+        $curso->setSlug();
+
+        $curso->save();
+
+        return redirect('cursos')->with('message', 'Guardado correctamente');
+
     }
 
 

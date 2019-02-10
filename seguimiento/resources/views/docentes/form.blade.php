@@ -19,8 +19,6 @@
     @else
     <form method="post" action="/docentes">
     @endif
-        @csrf
-        <input type="hidden" name="id" value="{{ $docente->id or '' }}">
         <div class="card text-center">
             <div class="card-header">
                 <h3>Cargar un docente</h3>

@@ -9,8 +9,6 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ModuleUsersTest extends TestCase
 {
-    use RefreshDatabase;
-
     /** @test */
     public function i_try_to_refuse_user()
     {

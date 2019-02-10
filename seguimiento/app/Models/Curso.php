@@ -10,6 +10,7 @@ namespace App\Models;
 
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class Curso extends Model
 {
@@ -35,6 +36,17 @@ class Curso extends Model
         return $this->belongsTo(Horario::class);
     }
 
+    public function setSlug()
+    {
+        $this->attributes['slug'] = Str::slug($this->attributes['id']."-".
+            $this->materia->carrera->abreviacion."-".
+            $this->materia->abreviatura."-".
+            $this->anio."-".
+            $this->dia->descripcion."-".
+            $this->horario->descripcion);
+
+        $this->save();
+    }
 
 
 

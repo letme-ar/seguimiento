@@ -8,8 +8,6 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ResetPasswordTest extends TestCase
 {
-    use RefreshDatabase;
-
     /** @test */
     function i_see_the_correct_page()
     {

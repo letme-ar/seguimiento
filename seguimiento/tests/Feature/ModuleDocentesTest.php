@@ -10,8 +10,6 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ModuleDocentesTest extends TestCase
 {
-    // Mantiene el estado inicial de la base de datos de antes de prueba
-    use RefreshDatabase;
 
 
     /** @test */
@@ -65,12 +63,16 @@ class ModuleDocentesTest extends TestCase
             'legajo' => '14461',
         ]);
 
+        $docente = Docente::all()->last();
+
+        $docente = $docente->fresh();
+
         $this->assertDatabaseHas('users',[
-            'docente_id' => 1,
-            'nombre' => 'Damian',
-            'apellido' => 'Ladiani',
-            'email' => 'damianladiani@hotmail.com',
-            'dni' => '12345674',
+            'docente_id' => $docente->id,
+            'nombre' => $docente->nombre,
+            'apellido' => $docente->apellido,
+            'email' => $docente->email,
+            'dni' => $docente->dni,
         ]);
 
 

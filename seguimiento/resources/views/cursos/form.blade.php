@@ -4,6 +4,15 @@
 
 @section('content')
 
+
+    @if(isset($curso))
+        <form method="post" action="/cursos/update">
+    @else
+        <form method="post" action="/cursos">
+    @endif
+
+    @csrf
+
     <h1>Crear un curso</h1>
 
     <div class="row">

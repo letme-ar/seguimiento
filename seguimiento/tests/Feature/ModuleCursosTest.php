@@ -14,13 +14,10 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 class ModuleCursosTest extends TestCase
 {
 
-    use RefreshDatabase;
-
 
     /** @test */
-    public function it_see_page_cursos()
+    function i_can_see_page_cursos()
     {
-
         $this->generateUserAndLogin();
 
         $this->get('cursos')
@@ -30,13 +27,14 @@ class ModuleCursosTest extends TestCase
     }
 
     /** @test */
-    function it_press_click_button_cargar_nuevo_curso()
+    function i_can_see_page_create_a_curso()
     {
-//        $this->withoutExceptionHandling();
+        $this->withoutExceptionHandling();
 
-        $this->generateUserAndLogin();
+        $this->generateDocenteUserAndLogin();
 
         $this->get('cursos/create')
+            ->assertSee('/cursos')
             ->assertSee('Carrera')
             ->assertSee('Materia')
             ->assertSee('Dia')
@@ -46,26 +44,62 @@ class ModuleCursosTest extends TestCase
             ->assertStatus(200);
     }
 
-    function test_create_a_course()
+    /** @test */
+    function i_can_see_page_edit_a_curso()
+    {
+        $this->withoutExceptionHandling();
+
+        $this->generateDocenteUserAndLogin();
+
+        $curso = factory(Curso::class)->create();
+
+        $this->get("cursos/edit/{$curso->id}-{$curso->slug}")
+            ->assertSee('/cursos/update')
+            ->assertSee('Carrera')
+            ->assertSee('Materia')
+            ->assertSee('Dia')
+            ->assertSee('Horario')
+            ->assertSee('Año')
+            ->assertSee('Ayudante')
+            ->assertStatus(200);
+    }
+
+    /** @test */
+    function i_can_create_a_course()
     {
         $this->withoutExceptionHandling();
         // having
-        extract($this->dataRequired());
+//        extract($this->dataRequired());
+
+        $this->generateDocenteUserAndLogin();
+
+        $curso = factory(Curso::class)->create();
 
         // when
         $this->post('cursos',[
-            'id' => '',
-            'materia_id' => 1,
-            'dia_id' => 1,
-            'horario_id' => 1,
+            'materia_id' => $curso->materia_id,
+            'dia_id' => $curso->dia_id,
+            'horario_id' => $curso->horario_id,
             'anio' => date('Y'),
-            'ayudante_id' => $ayudante->id
+            'ayudante_id' => $curso->ayudante_id
         ])->assertRedirect('/cursos');
+
+        $curso = Curso::all()->last();
+
+        $this->assertDatabaseHas('cursos',[
+            'materia_id' => $curso->materia_id,
+            'dia_id' => $curso->dia_id,
+            'horario_id' => $curso->horario_id,
+            'anio' => $curso->anio,
+            'ayudante_id' => $curso->ayudante_id,
+            'slug' => $curso->slug
+        ]);
 
 
     }
 
-    function test_course_require_a_matter()
+    /** @test */
+    function i_send_a_course_without_a_matter()
     {
         extract($this->dataRequired());
 
@@ -80,7 +114,8 @@ class ModuleCursosTest extends TestCase
         ])->assertSessionHasErrors(['materia_id']);
     }
 
-    function test_course_require_a_day()
+    /** @test */
+    function i_send_a_course_without_a_day()
     {
         extract($this->dataRequired());
 
@@ -95,7 +130,8 @@ class ModuleCursosTest extends TestCase
         ])->assertSessionHasErrors(['dia_id']);
     }
 
-    function test_course_require_a_timetable()
+    /** @test */
+    function i_send_a_course_without_a_timetable()
     {
         extract($this->dataRequired());
 
@@ -110,7 +146,9 @@ class ModuleCursosTest extends TestCase
         ])->assertSessionHasErrors(['horario_id']);
     }
 
-    function test_course_wrong_year()
+
+    /** @test */
+    function i_send_a_course_with_wrong_year()
     {
         extract($this->dataRequired());
 
@@ -125,7 +163,8 @@ class ModuleCursosTest extends TestCase
         ])->assertSessionHasErrors(['anio']);
     }
 
-    function test_course_wrong_assistant()
+    /** @test */
+    function i_send_a_course_with_wrong_assistant()
     {
         $this->dataRequired();
 
@@ -140,12 +179,17 @@ class ModuleCursosTest extends TestCase
         ])->assertSessionHasErrors(['ayudante_id']);
     }
 
-    function test_update_a_course()
+    /** @test */
+    function i_try_to_update_a_course()
     {
+        $this->withoutExceptionHandling();
+
         extract($this->dataRequired());
 
-        $this->post('cursos',[
-            'id' => '',
+        $curso = factory(Curso::class)->create();
+
+        $this->from("cursos/{$curso->id}-{$curso->slug}/edit")
+            ->post("cursos/{$curso->id}/update",[
             'materia_id' => $materia->id,
             'dia_id' => $dia->id,
             'horario_id' => $horario->id,
@@ -163,8 +207,7 @@ class ModuleCursosTest extends TestCase
             'ayudante_id' => $ayudante->id
         ]);
 
-        $this->post('cursos',[
-            'id' => $curso->id,
+        $this->post("cursos/{$curso->id}/update",[
             'materia_id' => $materia->id,
             'dia_id' => $dia->id,
             'horario_id' => $horario->id,
@@ -182,12 +225,6 @@ class ModuleCursosTest extends TestCase
         ]);
 
     }
-
-    /*function test_see_show_view()
-    {
-//        $this->get("");
-    }*/
-
 
     private function dataRequired()
     {
