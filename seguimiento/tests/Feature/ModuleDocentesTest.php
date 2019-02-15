@@ -15,12 +15,16 @@ class ModuleDocentesTest extends TestCase
     /** @test */
     function i_can_see_index_page()
     {
-        $this->generateUserAndLogin();
+        $this->generateDocenteUserAndLogin();
+
+        $docente = factory(Docente::class)->create();
+
+        factory(User::class)->create(['docente_id' => $docente->id]);
 
         $this->get('/docentes/')
-            ->assertSee('Agregar')
-            ->assertSee('Damian')
-            ->assertSee('Ladiani');
+            ->assertSee($docente->nombre)
+            ->assertSee($docente->apellido)
+            ->assertSee($docente->mail);
     }
 
     /** @test */
@@ -43,22 +47,23 @@ class ModuleDocentesTest extends TestCase
     /** @test */
     function i_can_create_a_docente()
     {
+
         $this->generateUserAndLogin();
 
         $this->from('/docentes/create')
             ->post('/docentes', [
-                'nombre' => 'Damian',
-                'apellido' => 'Ladiani',
-                'email' => 'damianladiani@hotmail.com',
+                'nombre' => 'Diana',
+                'apellido' => 'Soto',
+                'email' => 'dianasoto@hotmail.com',
                 'dni' => '12345674',
                 'legajo' => '14461',
             ])
             ->assertRedirect('docentes');
 
         $this->assertDatabaseHas('docentes',[
-            'nombre' => 'Damian',
-            'apellido' => 'Ladiani',
-            'email' => 'damianladiani@hotmail.com',
+            'nombre' => 'Diana',
+            'apellido' => 'Soto',
+            'email' => 'dianasoto@hotmail.com',
             'dni' => '12345674',
             'legajo' => '14461',
         ]);
@@ -88,10 +93,6 @@ class ModuleDocentesTest extends TestCase
 
         $this->generateUserAndLogin();
 
-//        dd($docente->url);
-
-//        dd("docentes.show/".Str::slug($docente->nombre.' '.$docente->apellido));
-
         $this->get('docentes/show/'.$docente->id."-".$docente->url)
             ->assertSee($docente->FullName)
             ->assertSee($docente->nombre)
@@ -105,14 +106,12 @@ class ModuleDocentesTest extends TestCase
     /** @test */
     function i_can_see_page_edit_docente()
     {
-//        $this->markTestIncomplete();
-//        exit();
         $docente = factory(Docente::class)->create();
 
         $this->generateUserAndLogin();
 
         $this->get('/docentes/edit/'.$docente->id."-".$docente->url)
-            ->assertSee('docentes/update')
+            ->assertSee("docentes/$docente->id/update")
             ->assertSee('Cargar un docente')
             ->assertSee('Nombre')
             ->assertSee('Apellido')
@@ -130,13 +129,9 @@ class ModuleDocentesTest extends TestCase
 
         $email = 'damianladiani@gmail.com';
 
-        $this->withoutExceptionHandling();
-
         $randomDocente = factory(Docente::class)->create(['email' => $email]);
-        $randomUser = factory(User::class)->create(['docente_id' => $randomDocente->id]);
+        factory(User::class)->create(['docente_id' => $randomDocente->id]);
 
-
-//        dd($randomDocente->user);
         $this->generateUserAndLogin();
 
         $this->from('/docentes/edit')
@@ -187,7 +182,6 @@ class ModuleDocentesTest extends TestCase
             ])
             ->assertSessionHasErrors(['nombre']);
     }
-
 
     /** @test */
     public function i_try_field_apellido_empty()
@@ -394,10 +388,13 @@ class ModuleDocentesTest extends TestCase
     {
         $this->generateUserAndLogin();
 
-        $randomDocente = factory(Docente::class)->create();
+        $randomDocente = factory(Docente::class)->create([
+            'nombre' => 'Damian',
+            'apellido' => 'Ladiani',
+        ]);
 
 
-        $this->get("docentes/edit/{$randomDocente->id}-{$randomDocente->nombre} {$randomDocente->apellido}")
+        $this->get("docentes/edit/{$randomDocente->id}-{$randomDocente->nombre}-{$randomDocente->apellido}")
             ->assertSee($randomDocente->nombre)
             ->assertSee($randomDocente->apellido)
             ->assertSee($randomDocente->email)

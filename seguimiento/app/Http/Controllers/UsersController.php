@@ -10,27 +10,26 @@ namespace App\Http\Controllers;
 
 
 use App\Mail\MailWelcome;
-use App\Models\Docente;
 use App\User;
 use Illuminate\Support\Facades\Mail;
 
 class UsersController extends Controller
 {
 
-    public function destroy(Docente $docente)
+    public function defuse(User $user)
     {
-        $docente->user->defuse();
+        $user->defuse();
 
-        Mail::to($docente->user->email,$docente->user->nombre_apellido)->send(new MailWelcome($docente->user));
+        Mail::to($user->email,$user->nombre_apellido)->send(new MailWelcome($user));
 
         return redirect('docentes')->with('message', 'Guardado correctamente');
     }
 
-    public function activate(Docente $docente)
+    public function activate(User $user)
     {
-        $docente->user->defuse();
+        $user->activate();
 
-        Mail::to($docente->user->email,$docente->user->nombre_apellido)->send(new MailWelcome($docente->user));
+        Mail::to($user->email,$user->nombre_apellido)->send(new MailWelcome($user));
 
         return redirect('docentes')->with('message', 'Guardado correctamente');
     }

@@ -21,6 +21,7 @@ class DocentesController extends Controller
 
     public function index()
     {
+//        dd("hola");
         $docentes = Docente::orderBy('apellido','asc')->paginate(env('APP_PAGINATE',10));
 
         return view("docentes.index",compact('docentes'));

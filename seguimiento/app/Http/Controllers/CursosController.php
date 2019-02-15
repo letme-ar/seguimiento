@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Curso;
-use App\Repositories\RepoCursos;
 use App\Validations\ValiCursos;
 use Illuminate\Http\Request;
 

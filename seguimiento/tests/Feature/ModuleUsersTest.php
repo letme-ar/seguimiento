@@ -9,37 +9,6 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ModuleUsersTest extends TestCase
 {
-    /** @test */
-    public function i_try_to_refuse_user()
-    {
-        $this->generateUserAndLogin();
-
-        $randomDocente = factory(Docente::class)->create();
-
-        factory(User::class)->create([
-            'docente_id' => $randomDocente->id,
-            'status' => 0
-        ]);
-
-        $this->delete("users/{$randomDocente->id}")
-            ->assertRedirect('/docentes');
-    }
-
-    /** @test */
-    public function i_try_to_activate_user()
-    {
-        $this->generateUserAndLogin();
-
-        $randomDocente = factory(Docente::class)->create();
-
-        factory(User::class)->create([
-            'docente_id' => $randomDocente->id,
-            'status' => 1
-        ]);
-
-        $this->put("users/{$randomDocente->id}")
-            ->assertRedirect('/docentes');
-    }
 
     /** @test */
 
@@ -48,6 +17,7 @@ class ModuleUsersTest extends TestCase
         $this->withoutExceptionHandling();
 
         $user = $this->generateUserAndLogin();
+
         $user->changePassword('123456');
 
         $this->from('change-password')
@@ -63,6 +33,7 @@ class ModuleUsersTest extends TestCase
     function i_try_change_the_password_without_the_password()
     {
         $user = $this->generateUserAndLogin();
+
         $user->changePassword('123456');
 
         $this->from('change-password')
@@ -78,6 +49,7 @@ class ModuleUsersTest extends TestCase
     function i_try_change_the_password_without_wrong_confirmation_password()
     {
         $user = $this->generateUserAndLogin();
+
         $user->changePassword('123456');
 
         $this->from('change-password')
@@ -89,5 +61,47 @@ class ModuleUsersTest extends TestCase
 
     }
 
+
+    /** @test */
+    function i_try_defuse_an_user()
+    {
+        $this->withoutExceptionHandling();
+
+        $user = $this->generateDocenteUserAndLogin();
+
+        $user->status = 1;
+        $user->save();
+
+
+        $this->from('docentes')
+            ->delete("users/{$user->id}/defuse")
+            ->assertRedirect('docentes');
+
+        $this->assertDatabaseHas('users',[
+           'id' => $user->id,
+           'status' => 0
+        ]);
+    }
+
+    /** @test */
+    function i_try_activate_an_user()
+    {
+        $this->withoutExceptionHandling();
+
+        $user = $this->generateDocenteUserAndLogin();
+
+        $user->status = 0;
+        $user->save();
+
+
+        $this->from('docentes')
+            ->post("users/{$user->id}/activate")
+            ->assertRedirect('docentes');
+
+        $this->assertDatabaseHas('users',[
+           'id' => $user->id,
+           'status' => 1
+        ]);
+    }
 
 }

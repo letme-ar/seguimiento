@@ -55,18 +55,17 @@
                 <td>{{ $docente->dni }}</td>
                 <td>{{ $docente->legajo }}</td>
                 <td>
-                    <a href="{{ route('docentes.edit',$docente->id) }}"><span class="oi oi-pencil" title="Editar" data-toggle="tooltip" data-placement="top"></span></a>
+                    <a href="{{ 'docentes/edit/'.$docente->id."-".$docente->url }}"><span class="oi oi-pencil" title="Editar" data-toggle="tooltip" data-placement="top"></span></a>
                     @if($docente->user->status)
-                        <form action="{{ route('users.defuse', $docente->id) }}" method="POST" class="inline-block">
+                        <form action="{{ route('users.defuse', $docente->user->id) }}" method="POST" class="inline-block">
                             {{ csrf_field() }}
                             {{ method_field('DELETE') }}
                             <button type="submit" class="btn btn-link no-gutter"><span class="oi oi-trash"></span></button>
                         </form>
 {{--                        <a href="{{ route('docentes.defuse',$docente->id) }}"><span class="oi oi-circle-x" title="Deshabilitar"></span></a>--}}
                     @else
-                        <form action="{{ route('users.activate', $docente->id) }}" method="POST" class="inline-block">
+                        <form action="{{ route('users.activate', $docente->user->id) }}" method="POST" class="inline-block">
                             {{ csrf_field() }}
-                            {{ method_field('PUT') }}
                             <button type="submit" class="btn btn-link no-gutter"><span class="oi oi-circle-check"></span></button>
                         </form>
                     @endif

@@ -47,9 +47,15 @@ Route::get('cursos/edit/{curso}-{slug}', [
 
 
 
+Route::delete('users/{user}/defuse',[
+    'as' => 'users.defuse',
+    'uses' => 'UsersController@defuse'
+]);
 
-Route::put('/users/{docente}','UsersController@activate')->name('users.activate');
-Route::delete('/users/{docente}','UsersController@destroy')->name('users.defuse');
+Route::post('users/{user}/activate',[
+    'as' => 'users.activate',
+    'uses' => 'UsersController@activate'
+]);
 
 Route::get('/home', 'HomeController@index')->name('home');
 

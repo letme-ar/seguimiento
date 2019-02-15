@@ -15,16 +15,16 @@
 @section('content')
 
     @if($docente->exists)
-    <form method="post" action="/docentes/update">
+        <form method="post" action="/docentes/{{ $docente->id }}/update">
     @else
-    <form method="post" action="/docentes">
+        <form method="post" action="/docentes">
     @endif
         <div class="card text-center">
             <div class="card-header">
                 <h3>Cargar un docente</h3>
             </div>
             <div class="card-body">
-
+                {{ csrf_field() }}
 
                 <div class="col-md-12 row">
                     <div class="col-md-6 form-group">
