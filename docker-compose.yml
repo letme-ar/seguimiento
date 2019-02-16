@@ -9,7 +9,7 @@ services:
     networks:
       - seguimiento
   php:
-    image: pollitofive/php:1.0.0
+    build: build/php
     volumes:
       - ./seguimiento:/var/www/html
     networks:
