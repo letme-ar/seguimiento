@@ -11,53 +11,67 @@ class ModuleUsersTest extends TestCase
 {
 
     /** @test */
+    function i_see_page_change_password()
+    {
+        $this->generateDocenteUserAndLogin();
 
+        $this->visit('change-password')
+            ->see('Contraseña anterior')
+            ->see('Nueva contraseña')
+            ->see('Repetir contraseña')
+            ->see('Cambiar contraseña');
+
+    }
+
+    /** @test */
     function i_can_change_the_password()
     {
-        $this->withoutExceptionHandling();
 
-        $user = $this->generateUserAndLogin();
+        $user = $this->generateDocenteUserAndLogin();
 
         $user->changePassword('123456');
 
-        $this->from('change-password')
-        ->post('change-password',[
-            'password' => '123456',
-            'new_password' => '12345678',
-            'new_password_confirmation' => '12345678'
-        ])->assertRedirect('/');
+        $this->visit('change-password')
+            ->type('123456','password')
+            ->type('12345678','new_password')
+            ->type('12345678','new_password_confirmation')
+            ->press('Cambiar contraseña')
+            ->seePageIs('/')
+            ->see('Guardado correctamente');
+
 
     }
 
     /** @test */
     function i_try_change_the_password_without_the_password()
     {
-        $user = $this->generateUserAndLogin();
 
-        $user->changePassword('123456');
+        $this->generateDocenteUserAndLogin();
 
-        $this->from('change-password')
-        ->post('change-password',[
-            'password' => '',
-            'new_password' => '12345678',
-            'new_password_confirmation' => '12345678'
-        ])->assertSessionHasErrors('password');
-
+        $this->visit('change-password')
+            ->type('','password')
+            ->type('12345678','new_password')
+            ->type('12345678','new_password_confirmation')
+            ->press('Cambiar contraseña')
+            ->seePageIs('change-password')
+            ->see('Debe ingresar el password anterior');
     }
 
     /** @test */
-    function i_try_change_the_password_without_wrong_confirmation_password()
+    function i_try_change_the_password_with_wrong_confirmation_password()
     {
-        $user = $this->generateUserAndLogin();
 
+        $user = $this->generateDocenteUserAndLogin();
         $user->changePassword('123456');
 
-        $this->from('change-password')
-        ->post('change-password',[
-            'password' => '123456',
-            'new_password' => '123456789',
-            'new_password_confirmation' => '12345678'
-        ])->assertSessionHasErrors('new_password');
+        $this->visit('change-password')
+            ->type('1234563','password')
+            ->type('12345678','new_password')
+            ->type('123456789','new_password_confirmation')
+            ->press('Cambiar contraseña')
+            ->seePageIs('change-password')
+            ->see('La confirmación del nuevo password no coincide con el password ingresado');
+
 
     }
 
@@ -65,19 +79,21 @@ class ModuleUsersTest extends TestCase
     /** @test */
     function i_try_defuse_an_user()
     {
-        $this->withoutExceptionHandling();
+        $docente = factory(Docente::class)->create();
 
-        $user = $this->generateDocenteUserAndLogin();
+        $user = factory(User::class)->create([
+            'docente_id' => $docente->id,
+            'status' => 1
+        ]);
 
-        $user->status = 1;
-        $user->save();
+        $this->actingAs($user);
 
 
-        $this->from('docentes')
-            ->delete("users/{$user->id}/defuse")
-            ->assertRedirect('docentes');
+        $this->visit('docentes')
+            ->press($docente->user->id."-trash")
+            ->seePageIs('docentes');
 
-        $this->assertDatabaseHas('users',[
+        $this->seeInDatabase('users',[
            'id' => $user->id,
            'status' => 0
         ]);
@@ -86,22 +102,25 @@ class ModuleUsersTest extends TestCase
     /** @test */
     function i_try_activate_an_user()
     {
-        $this->withoutExceptionHandling();
+        $docente = factory(Docente::class)->create();
 
-        $user = $this->generateDocenteUserAndLogin();
-
-        $user->status = 0;
-        $user->save();
-
-
-        $this->from('docentes')
-            ->post("users/{$user->id}/activate")
-            ->assertRedirect('docentes');
-
-        $this->assertDatabaseHas('users',[
-           'id' => $user->id,
-           'status' => 1
+        $user = factory(User::class)->create([
+            'docente_id' => $docente->id,
+            'status' => 0
         ]);
+
+        $this->actingAs($user);
+
+
+        $this->visit('docentes')
+            ->press($docente->user->id."-check")
+            ->seePageIs('docentes');
+
+        $this->seeInDatabase('users',[
+            'id' => $user->id,
+            'status' => 1
+        ]);
+
     }
 
 }

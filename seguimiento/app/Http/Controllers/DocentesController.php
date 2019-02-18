@@ -21,7 +21,6 @@ class DocentesController extends Controller
 
     public function index()
     {
-//        dd("hola");
         $docentes = Docente::orderBy('apellido','asc')->paginate(env('APP_PAGINATE',10));
 
         return view("docentes.index",compact('docentes'));
@@ -62,9 +61,13 @@ class DocentesController extends Controller
 
     public function update(Request $request,Docente $docente)
     {
+
+//        dd($docente);
         $this->valiDocentes->setId($docente->id);
 
         $request->validate($this->valiDocentes->getRules());
+
+//        dd("hola");
 
         $docente->fill($request->all())->save();
 

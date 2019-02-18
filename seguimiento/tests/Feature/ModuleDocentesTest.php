@@ -21,7 +21,7 @@ class ModuleDocentesTest extends TestCase
 
         factory(User::class)->create(['docente_id' => $docente->id]);
 
-        $this->get('/docentes/')
+        $this->visit('docentes/')
             ->assertSee($docente->nombre)
             ->assertSee($docente->apellido)
             ->assertSee($docente->mail);
@@ -32,7 +32,7 @@ class ModuleDocentesTest extends TestCase
     {
         $this->generateUserAndLogin();
 
-        $this->get('/docentes/create')
+        $this->visit('/docentes/create')
             ->assertSee('post')
             ->assertSee('Cargar un docente')
             ->assertSee('Nombre')
@@ -47,32 +47,31 @@ class ModuleDocentesTest extends TestCase
     /** @test */
     function i_can_create_a_docente()
     {
-
         $this->generateUserAndLogin();
 
-        $this->from('/docentes/create')
-            ->post('/docentes', [
-                'nombre' => 'Diana',
-                'apellido' => 'Soto',
-                'email' => 'dianasoto@hotmail.com',
-                'dni' => '12345674',
-                'legajo' => '14461',
-            ])
-            ->assertRedirect('docentes');
+        $this->visit('docentes/create')
+            ->type('Diana','nombre')
+            ->type('Soto','apellido')
+            ->type('dianasoto@hotmail.com','email')
+            ->type('12345678','dni')
+            ->type('12345','legajo')
+            ->press('Guardar')
+            ->seePageIs('docentes');
 
-        $this->assertDatabaseHas('docentes',[
+
+        $this->seeInDatabase('docentes',[
             'nombre' => 'Diana',
             'apellido' => 'Soto',
             'email' => 'dianasoto@hotmail.com',
-            'dni' => '12345674',
-            'legajo' => '14461',
+            'dni' => '12345678',
+            'legajo' => '12345',
         ]);
 
         $docente = Docente::all()->last();
 
         $docente = $docente->fresh();
 
-        $this->assertDatabaseHas('users',[
+        $this->seeInDatabase('users',[
             'docente_id' => $docente->id,
             'nombre' => $docente->nombre,
             'apellido' => $docente->apellido,
@@ -87,13 +86,11 @@ class ModuleDocentesTest extends TestCase
     /** @test */
     function i_can_see_page_show_docente()
     {
-        $this->withExceptionHandling();
-
         $docente = factory(Docente::class)->create();
 
         $this->generateUserAndLogin();
 
-        $this->get('docentes/show/'.$docente->id."-".$docente->url)
+        $this->visit('docentes/show/'.$docente->id."-".$docente->url)
             ->assertSee($docente->FullName)
             ->assertSee($docente->nombre)
             ->assertSee($docente->apellido)
@@ -110,7 +107,7 @@ class ModuleDocentesTest extends TestCase
 
         $this->generateUserAndLogin();
 
-        $this->get('/docentes/edit/'.$docente->id."-".$docente->url)
+        $this->visit('/docentes/edit/'.$docente->id."-".$docente->url)
             ->assertSee("docentes/$docente->id/update")
             ->assertSee('Cargar un docente')
             ->assertSee('Nombre')
@@ -134,17 +131,16 @@ class ModuleDocentesTest extends TestCase
 
         $this->generateUserAndLogin();
 
-        $this->from('/docentes/edit')
-            ->post('docentes/'.$randomDocente->id.'/update',[
-                'nombre' => 'Damian',
-                'apellido' => 'Ladiani',
-                'email' => $email,
-                'dni' => '12345674',
-                'legajo' => '14461',
-            ])
-            ->assertRedirect('/docentes');
+        $this->visit('docentes/edit/'.$randomDocente->id."-".$randomDocente->url)
+            ->type('Damian','nombre')
+            ->type('Ladiani','apellido')
+            ->type($email,'email')
+            ->type('12345674','dni')
+            ->type('14461','legajo')
+            ->press('Guardar')
+            ->seePageIs('docentes');
 
-        $this->assertDatabaseHas('docentes',[
+        $this->seeInDatabase('docentes',[
             'id' => $randomDocente->id,
             'nombre' => 'Damian',
             'apellido' => 'Ladiani',
@@ -155,7 +151,7 @@ class ModuleDocentesTest extends TestCase
 
         $randomDocente = $randomDocente->fresh();
 
-        $this->assertDatabaseHas('users',[
+        $this->seeInDatabase('users',[
             'docente_id' => $randomDocente->id,
             'nombre' => $randomDocente->nombre,
             'apellido' => $randomDocente->apellido,
@@ -172,67 +168,64 @@ class ModuleDocentesTest extends TestCase
     {
         $this->generateUserAndLogin();
 
-        $this->from('/docentes/create')
-            ->post('/docentes', [
-                'nombre' => '',
-                'apellido' => 'Ladiani',
-                'email' => 'damianladiani@hotmail.com',
-                'dni' => '12345674',
-                'legajo' => '14461',
-            ])
-            ->assertSessionHasErrors(['nombre']);
+        $this->visit('/docentes/create')
+            ->type('','nombre')
+            ->type('Ladiani','apellido')
+            ->type('damianladiani@hotmail.com','email')
+            ->type('12345674','dni')
+            ->type('14461','legajo')
+            ->press('Guardar')
+            ->see('El campo nombre es obligatorio.');
     }
 
     /** @test */
-    public function i_try_field_apellido_empty()
+    public function i_try_to_create_a_docente_with_the_field_apellido_empty()
     {
         $this->generateUserAndLogin();
 
-        $this->from('/docentes/create')
-            ->post('/docentes',[
-                'nombre' => 'Damian',
-                'apellido' => '',
-                'email' => 'damianladiani@hotmail.com',
-                'dni' => '12345674',
-                'legajo' => '14461',
-            ])
-            ->assertSessionHasErrors(['apellido']);
+        $this->visit('/docentes/create')
+            ->type('Damian','nombre')
+            ->type('','apellido')
+            ->type('damianladiani@hotmail.com','email')
+            ->type('12345674','dni')
+            ->type('14461','legajo')
+            ->press('Guardar')
+            ->see('El campo apellido es obligatorio.');
     }
 
     /** @test */
-    public function i_try_field_email_empty()
+    public function i_try_to_create_a_docente_with_the_field_email_empty()
     {
         $this->generateUserAndLogin();
 
-        $this->from('/docentes/create')
-            ->post('/docentes',[
-                'nombre' => 'Damian',
-                'apellido' => 'Ladiani',
-                'email' => '',
-                'dni' => '12345674',
-                'legajo' => '14461',
-            ])
-            ->assertSessionHasErrors(['email']);
+        $this->visit('/docentes/create')
+            ->type('Damian','nombre')
+            ->type('Ladiani','apellido')
+            ->type('','email')
+            ->type('12345674','dni')
+            ->type('14461','legajo')
+            ->press('Guardar')
+            ->see('El campo correo electrónico es obligatorio.');
     }
 
     /** @test */
-    public function i_try_field_email_wrong()
+    public function i_try_to_create_a_docente_with_the_field_email_wrong()
     {
         $this->generateUserAndLogin();
 
-        $this->from('/docentes/create')
-            ->post('/docentes',[
-                'nombre' => 'Damian',
-                'apellido' => 'Ladiani',
-                'email' => 'dadsadsadsaasddsadsaad',
-                'dni' => '12345674',
-                'legajo' => '14461',
-            ])
-            ->assertSessionHasErrors(['email']);
+        $this->visit('/docentes/create')
+            ->type('Damian','nombre')
+            ->type('Ladiani','apellido')
+            ->type('sadadasdsaddsasdasdssasdasds','email')
+            ->type('12345674','dni')
+            ->type('14461','legajo')
+            ->press('Guardar')
+            ->see('El campo correo electrónico no es un correo válido');
+
     }
 
     /** @test */
-    public function i_try_field_email_duplicate()
+    public function i_try_to_create_a_docente_with_the_email_duplicate()
     {
         $email = 'damianladiani@gmail.com';
 
@@ -240,77 +233,52 @@ class ModuleDocentesTest extends TestCase
 
         $this->generateUserAndLogin();
 
-        $this->from('/docentes/create')
-            ->post('/docentes',[
-                'nombre' => 'Damian',
-                'apellido' => 'Ladiani',
-                'email' => $email,
-                'dni' => '12345674',
-                'legajo' => '14461',
-            ])
-            ->assertSessionHasErrors(['email']);
+        $this->visit('/docentes/create')
+            ->type('Damian','nombre')
+            ->type('Ladiani','apellido')
+            ->type($email,'email')
+            ->type('12345674','dni')
+            ->type('14461','legajo')
+            ->press('Guardar')
+            ->see('Ese correo electrónico ya ha sido registrado.');
     }
 
-    /** @test */
-    public function i_try_update_field_email_repeated()
-    {
-        $email = 'damianladiani@gmail.com';
 
-        $this->withExceptionHandling();
-
-        factory(Docente::class)->create(['email' => $email]);
-
-        $this->generateUserAndLogin();
-
-        $this->from('/docentes/create')
-            ->post('/docentes',[
-                'id' => '',
-                'nombre' => 'Damian',
-                'apellido' => 'Ladiani',
-                'email' => $email,
-                'dni' => '12345674',
-                'legajo' => '14461',
-            ])
-            ->assertRedirect('/docentes/create')
-            ->assertSessionHasErrors(['email']);
-    }
 
     /** @test */
-    public function i_try_field_dni_empty()
+    public function i_try_to_create_a_docente_with_the_dni_empty()
     {
         $this->generateUserAndLogin();
 
-        $this->from('/docentes/create')
-            ->post('/docentes',[
-                'nombre' => 'Damian',
-                'apellido' => 'Ladiani',
-                'email' => 'damian@ladiani.com',
-                'dni' => '',
-                'legajo' => '14461',
-            ])
-            ->assertSessionHasErrors(['dni']);
+        $this->visit('/docentes/create')
+            ->type('Damian','nombre')
+            ->type('Ladiani','apellido')
+            ->type('damianladiani@hotmail.com','email')
+            ->type('','dni')
+            ->type('14461','legajo')
+            ->press('Guardar')
+            ->see('El campo dni es obligatorio.');
 
     }
 
     /** @test */
-    public function i_try_field_dni_wrong()
+    public function i_try_to_create_a_docente_with_the_dni_wrong()
     {
         $this->generateUserAndLogin();
 
-        $this->from('/docentes/create')
-            ->post('/docentes',[
-                'nombre' => 'Damian',
-                'apellido' => 'Ladiani',
-                'email' => 'damian@ladiani.com',
-                'dni' => 'dsadsdasdas',
-                'legajo' => '14461',
-            ])
-            ->assertSessionHasErrors(['dni']);
+        $this->visit('/docentes/create')
+            ->type('Damian','nombre')
+            ->type('Ladiani','apellido')
+            ->type('damianladiani@hotmail.com','email')
+            ->type('sdadadasd','dni')
+            ->type('14461','legajo')
+            ->press('Guardar')
+            ->see('El campo dni debe ser numérico.');
 
     }
 
     /** @test */
-    public function i_try_field_dni_duplicate()
+    public function i_try_to_create_a_docente_with_the_dni_duplicate()
     {
         $dni = '33794702';
 
@@ -318,53 +286,50 @@ class ModuleDocentesTest extends TestCase
 
         $this->generateUserAndLogin();
 
-        $this->from('/docentes/create')
-            ->post('/docentes',[
-                'nombre' => 'Damian',
-                'apellido' => 'Ladiani',
-                'email' => 'damianladiani@gmail.com',
-                'dni' => $dni,
-                'legajo' => '14461',
-            ])
-            ->assertSessionHasErrors(['dni']);
+        $this->visit('/docentes/create')
+            ->type('Damian','nombre')
+            ->type('Ladiani','apellido')
+            ->type('damianladiani@hotmail.com','email')
+            ->type('','dni')
+            ->type('14461','legajo')
+            ->press('Guardar')
+            ->see('El campo dni es obligatorio.');
     }
 
     /** @test */
-    public function i_try_field_legajo_empty()
+    public function i_try_to_create_a_docente_with_the_legajo_empty()
     {
         $this->generateUserAndLogin();
 
-        $this->from('/docentes/create')
-            ->post('/docentes',[
-                'nombre' => 'Damian',
-                'apellido' => 'Ladiani',
-                'email' => 'damian@ladiani.com',
-                'dni' => 'dsadsdasdas',
-                'legajo' => '',
-            ])
-            ->assertSessionHasErrors(['legajo']);
+        $this->visit('/docentes/create')
+            ->type('Damian','nombre')
+            ->type('Ladiani','apellido')
+            ->type('damianladiani@hotmail.com','email')
+            ->type('12345678','dni')
+            ->type('','legajo')
+            ->press('Guardar')
+            ->see('El campo legajo es obligatorio.');
 
     }
 
     /** @test */
-    public function i_try_field_legajo_wrong()
+    public function i_try_to_create_a_docente_with_the_legajo_wrong()
     {
         $this->generateUserAndLogin();
 
-        $this->from('/docentes/create')
-            ->post('/docentes',[
-                'nombre' => 'Damian',
-                'apellido' => 'Ladiani',
-                'email' => 'damian@ladiani.com',
-                'dni' => 'dsadsdasdas',
-                'legajo' => 'sadsadsdsaasd',
-            ])
-            ->assertSessionHasErrors(['legajo']);
+        $this->visit('/docentes/create')
+            ->type('Damian','nombre')
+            ->type('Ladiani','apellido')
+            ->type('damianladiani@hotmail.com','email')
+            ->type('12345678','dni')
+            ->type('fdssfsfa','legajo')
+            ->press('Guardar')
+            ->see('El campo legajo debe tener entre 3 y 20 dígitos.');
 
     }
 
     /** @test */
-    public function i_try_field_legajo_duplicate()
+    public function i_try_to_create_a_docente_with_the_legajo_duplicate()
     {
         $legajo = '14461';
 
@@ -372,34 +337,14 @@ class ModuleDocentesTest extends TestCase
 
         $this->generateUserAndLogin();
 
-        $this->from('/docentes/create')
-            ->post('/docentes',[
-                'nombre' => 'Damian',
-                'apellido' => 'Ladiani',
-                'email' => 'damianladiani@gmail.com',
-                'dni' => '12345674',
-                'legajo' => $legajo,
-            ])
-            ->assertSessionHasErrors(['legajo']);
-    }
-
-    /** @test */
-    public function i_see_page_edit()
-    {
-        $this->generateUserAndLogin();
-
-        $randomDocente = factory(Docente::class)->create([
-            'nombre' => 'Damian',
-            'apellido' => 'Ladiani',
-        ]);
-
-
-        $this->get("docentes/edit/{$randomDocente->id}-{$randomDocente->nombre}-{$randomDocente->apellido}")
-            ->assertSee($randomDocente->nombre)
-            ->assertSee($randomDocente->apellido)
-            ->assertSee($randomDocente->email)
-            ->assertSee($randomDocente->dni)
-            ->assertSee($randomDocente->legajo);
+        $this->visit('/docentes/create')
+            ->type('Damian','nombre')
+            ->type('Ladiani','apellido')
+            ->type('damianladiani@hotmail.com','email')
+            ->type('12345678','dni')
+            ->type($legajo,'legajo')
+            ->press('Guardar')
+            ->see('Ese legajo ya ha sido registrado.');
 
     }
 

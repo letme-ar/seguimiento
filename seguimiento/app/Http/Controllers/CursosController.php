@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Curso;
+use App\Models\Docente;
 use App\Validations\ValiCursos;
 use Illuminate\Http\Request;
 
@@ -29,12 +30,17 @@ class CursosController extends Controller
 
     public function store(Request $request)
     {
+
         $request->merge([
-            'docente_id' => \Auth::user()->docente_id,
+            'docente_id' => auth()->user()->docente->id,
             'slug' => '',
         ]);
 
-        $request->validate($this->valiCursos->getRules());
+//        dd($request->all());
+
+//        dd(Docente::where('id',auth()->user->docente->id)->first());
+
+        $request->validate($this->valiCursos->getRules(),$this->valiCursos->getMessages());
 
         $curso = new Curso($request->all());
 
