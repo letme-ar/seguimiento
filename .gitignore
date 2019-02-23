@@ -10,3 +10,5 @@ seguimiento/npm-debug.log
 seguimiento/yarn-error.log
 seguimiento/.env
 seguimiento/.phpunit.result.cache
+_ide_helper.php
+commands_phpstorm
