@@ -57,6 +57,11 @@ Route::post('users/{user}/activate',[
     'uses' => 'UsersController@activate'
 ]);
 
+Route::post('users/{user}/restartPassword',[
+    'as' => 'users.restartPassword',
+    'uses' => 'UsersController@restartPassword'
+]);
+
 Route::get('/home', 'HomeController@index')->name('home');
 
 

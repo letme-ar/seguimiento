@@ -37,7 +37,13 @@ class User extends Authenticatable
         $this->attributes['password'] = \Hash::make($new_password);
         $this->attributes['password_change'] = 0;
         $this->save();
+    }
 
+    public function restartPassword()
+    {
+        $this->attributes['password'] = \Hash::make($this->docente->legajo);
+        $this->attributes['password_change'] = 1;
+        $this->save();
     }
 
     /*public function fillUser(Docente $docente)

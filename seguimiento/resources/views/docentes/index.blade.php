@@ -60,15 +60,18 @@
                         <form action="{{ route('users.defuse', $docente->user->id) }}" method="POST" class="inline-block">
                             {{ csrf_field() }}
                             {{ method_field('DELETE') }}
-                            <button type="submit" class="btn btn-link no-gutter" id="{{$docente->user->id}}-trash"><span class="oi oi-trash"></span></button>
+                            <button type="submit" class="btn btn-link no-gutter" id="{{$docente->user->id}}-trash" title="Desactivar"><span class="oi oi-trash"></span></button>
                         </form>
-{{--                        <a href="{{ route('docentes.defuse',$docente->id) }}"><span class="oi oi-circle-x" title="Deshabilitar"></span></a>--}}
                     @else
                         <form action="{{ route('users.activate', $docente->user->id) }}" method="POST" class="inline-block">
                             {{ csrf_field() }}
-                            <button type="submit" class="btn btn-link no-gutter" id="{{$docente->user->id}}-check"><span class="oi oi-circle-check"></span></button>
+                            <button type="submit" class="btn btn-link no-gutter" id="{{$docente->user->id}}-check" title="Activar"><span class="oi oi-circle-check"></span></button>
                         </form>
                     @endif
+                    <form action="{{ route('users.restartPassword', $docente->user->id) }}" method="POST" class="inline-block">
+                        {{ csrf_field() }}
+                        <button type="submit" class="btn btn-link no-gutter" id="{{$docente->user->id}}-check" title="Reinciar contraseña"><span class="oi oi-reload"></span></button>
+                    </form>
                 </td>
             </tr>
             @empty

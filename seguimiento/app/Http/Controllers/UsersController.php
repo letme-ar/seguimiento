@@ -33,4 +33,11 @@ class UsersController extends Controller
 
         return redirect('docentes')->with('message', 'Guardado correctamente');
     }
+
+    public function restartPassword(User $user)
+    {
+        $user->restartPassword();
+
+        return redirect('docentes')->with('message', 'Guardado correctamente');
+    }
 }
