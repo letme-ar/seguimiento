@@ -36,6 +36,11 @@ class Curso extends Model
         return $this->belongsTo(Horario::class);
     }
 
+    public function ayudante()
+    {
+        return $this->belongsTo(Docente::class);
+    }
+
     public function setSlug()
     {
         $this->attributes['slug'] = Str::slug($this->attributes['id']."-".

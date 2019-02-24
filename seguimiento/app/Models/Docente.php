@@ -20,7 +20,7 @@ class Docente extends Model
         return Str::slug($this->attributes['nombre']." ".$this->attributes['apellido']);
     }
 
-    public function getFullNameAttributes()
+    public function getFullNameAttribute()
     {
         return $this->attributes['nombre']." ".$this->attributes['apellido'];
     }

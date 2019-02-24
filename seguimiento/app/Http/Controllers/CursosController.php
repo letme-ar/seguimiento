@@ -20,7 +20,9 @@ class CursosController extends Controller
 
     public function index()
     {
-        return view('cursos.index');
+        $cursos = Curso::where('docente_id',auth()->user()->docente->id)->paginate(env('APP_PAGINATE',10));
+
+        return view('cursos.index',compact('cursos'));
     }
 
     public function create()
@@ -47,8 +49,12 @@ class CursosController extends Controller
         return redirect('cursos')->with('message', 'Guardado correctamente');
     }
 
-    public function edit(Curso $curso)
+    public function edit($curso_id)
     {
+        $curso = Curso::where('id',$curso_id)
+            ->where('docente_id',auth()->user()->docente->id)
+            ->firstOrFail();
+
         return view('cursos.form',compact('curso'));
     }
 
