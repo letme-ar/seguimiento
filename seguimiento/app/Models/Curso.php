@@ -28,7 +28,7 @@ class Curso extends Model
 
     public function dia()
     {
-        return $this->belongsTo(Materia::class);
+        return $this->belongsTo(Dia::class);
     }
 
     public function horario()

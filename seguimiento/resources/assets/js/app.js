@@ -17,6 +17,8 @@ window.Vue = require('vue');
 
 Vue.component('example-component', require('./components/ExampleComponent.vue'));
 
+Vue.component('select-carreras', require('./components/combo-carrerase'));
+
 const app = new Vue({
     el: '#app'
 });

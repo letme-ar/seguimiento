@@ -36,10 +36,6 @@ class CursosController extends Controller
             'slug' => '',
         ]);
 
-//        dd($request->all());
-
-//        dd(Docente::where('id',auth()->user->docente->id)->first());
-
         $request->validate($this->valiCursos->getRules(),$this->valiCursos->getMessages());
 
         $curso = new Curso($request->all());

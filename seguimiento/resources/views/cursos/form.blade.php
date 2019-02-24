@@ -1,101 +1,96 @@
 @extends('layouts.app')
 
+@section('scripts')
 
+    <script>
+
+        $(document).ready(function () {
+
+            $('select[name=ayudante_id]').selectpicker();
+
+            $("#btnBack").click(function (){
+                window.location.href = '/cursos';
+            });
+
+
+        });
+
+
+    </script>
+
+@endsection
 
 @section('content')
 
-    @foreach($errors->all() as $error)
-
-        {!! $error !!}
-
-    @endforeach
-
     @if(isset($curso))
-        <form method="post" action="/cursos/{{ $curso->id }}/update">
+    <form method="post" action="/cursos/{{ $curso->id }}/update">
     @else
-        <form method="post" action="/cursos">
+    <form method="post" action="/cursos">
     @endif
 
     @csrf
 
-    <h1>Crear un curso</h1>
+        <h1>Crear un curso</h1>
 
-    <div class="row">
-        <div class="col form-group">
-            <label for="carrera_id">Carrera</label>
-            <select class="form-control" id="carrera_id">
-                <option>1</option>
-                <option>2</option>
-                <option>3</option>
-                <option>4</option>
-                <option>5</option>
-            </select>
-            <div class="alert-danger">{!! $errors->first('carrera_id', ':message') !!}</div>
+            <div class="row">
+
+                @include('components.select-template',[
+                    'description' => 'Carrera',
+                    'name' => 'carrera_id',
+                    'options' => ['' => 'Seleccione una carrera'] + $carreras,
+                    'error' => $errors->first('carrera_id', ':message')
+                ])
+
+                @include('components.select-template',[
+                    'description' => 'Materia',
+                    'name' => 'materia_id',
+                    'options' => ['' => 'Seleccione una materia'] + $materias,
+                    'error' => $errors->first('materia_id', ':message'),
+                    'attributes' => 'data-live-search="true"'
+                ])
+
+            </div>
+
+            <div class="row">
+
+                @include('components.select-template',[
+                    'description' => 'Dia',
+                    'name' => 'dia_id',
+                    'options' => ['' => 'Seleccione un dia'] + $dias,
+                    'error' => $errors->first('dia_id', ':message')
+                ])
+
+                @include('components.select-template',[
+                    'description' => 'Horario',
+                    'name' => 'horario_id',
+                    'options' => ['' => 'Seleccione un horario'] + $horarios,
+                    'error' => $errors->first('horario_id', ':message')
+                ])
+
+            </div>
+            <div class="row">
+                @include('components.select-template',[
+                    'description' => 'Año',
+                    'name' => 'anio',
+                    'options' => ['' => 'Seleccione un año'] + $anios,
+                    'error' => $errors->first('anio', ':message')
+                ])
+
+                @include('components.select-template',[
+                    'description' => 'Ayudante',
+                    'name' => 'ayudante_id',
+                    'options' => ['' => 'Seleccione un ayudante'] + $ayudantes,
+                    'error' => $errors->first('ayudante_id', ':message'),
+                    'attributes' => 'data-live-search="true"'
+                ])
+
+            </div>
+        <div class="text-center">
+            <div class="card-footer text-muted">
+                <input type="button" id="btnBack" class="btn btn-danger" value="Volver">
+                <input type="submit" value="Guardar" class="btn btn-primary">
+            </div>
         </div>
-        <div class="col form-group">
-            <label for="materia_id">Materia</label>
-            <select class="form-control" id="materia_id" name="materia_id">
-                <option></option>
-                <option>1</option>
-                <option>2</option>
-                <option>3</option>
-                <option>4</option>
-                <option>5</option>
-            </select>
-            <div class="alert-danger">{!! $errors->first('materia_id', ':message') !!}</div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col form-group">
-            <label for="dia">Dia</label>
-            <select class="form-control" id="dia_id" name="dia_id">
-                <option></option>
-                <option>1</option>
-                <option>2</option>
-                <option>3</option>
-                <option>4</option>
-                <option>5</option>
-            </select>
-            <div class="alert-danger">{!! $errors->first('dia_id', ':message') !!}</div>
-        </div>
-        <div class="col form-group">
-            <label for="horario">Horario</label>
-            <select class="form-control" id="horario_id" name="horario_id">
-                <option></option>
-                <option>1</option>
-                <option>2</option>
-                <option>3</option>
-                <option>4</option>
-                <option>5</option>
-            </select>
-            <div class="alert-danger">{!! $errors->first('horario_id', ':message') !!}</div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col form-group">
-            <label for="anio">Año</label>
-            <select class="form-control" id="anio" name="anio">
-                <option></option>
-                <option>2018</option>
-                <option>2019</option>
-                <option>2020</option>
-            </select>
-            <div class="alert-danger">{!! $errors->first('anio', ':message') !!}</div>
-        </div>
-        <div class="col form-group">
-            <label for="ayudante_id">Ayudante</label>
-            <select class="form-control" id="ayudante_id" name="ayudante_id">
-                <option></option>
-                <option>1</option>
-                <option>2</option>
-                <option>3</option>
-                <option>4</option>
-                <option>5</option>
-            </select>
-            <div class="alert-danger">{!! $errors->first('ayudante_id', ':message') !!}</div>
-        </div>
-    </div>
-            <input type="submit" value="Guardar">
-        </form>
+    </form>
 
 @endsection
