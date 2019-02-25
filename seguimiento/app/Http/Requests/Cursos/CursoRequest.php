@@ -2,29 +2,33 @@
 /**
  * Created by PhpStorm.
  * User: damian
- * Date: 04/02/19
- * Time: 11:16
+ * Date: 25/02/19
+ * Time: 15:04
  */
 
-namespace App\Validations;
+namespace App\Http\Requests;
 
 
-class ValiCursos implements ValiBase
+use Illuminate\Foundation\Http\FormRequest;
+
+abstract class CursoRequest extends FormRequest
 {
+    public function authorize()
+    {
+        return true;
+    }
 
-    public function getRules()
+    public function rules()
     {
         return [
-            'docente_id' => 'required | numeric',
             'materia_id' => 'required | numeric',
             'dia_id' => 'required | numeric',
             'horario_id' => 'required | numeric',
             'anio' => 'required|digits:4|integer|min:2015|max:'.(date('Y')+1)
         ];
-
     }
 
-    public function getMessages()
+    public function messages()
     {
         return [
             'materia_id.required' => 'El campo materia es obligatorio',
@@ -33,4 +37,5 @@ class ValiCursos implements ValiBase
             'anio.required' => 'El campo año es obligatorio'
         ];
     }
+
 }

@@ -58,9 +58,11 @@ class ModuleCursosTest extends TestCase
     /** @test */
     function i_can_see_page_edit_a_curso()
     {
-        $this->generateDocenteUserAndLogin();
+        $user = $this->generateDocenteUserAndLogin();
 
-        $curso = factory(Curso::class)->create();
+        $curso = factory(Curso::class)->create([
+                'docente_id' => $user->docente_id
+        ]);
 
         $this->visit("cursos/edit/{$curso->id}-{$curso->slug}")
             ->assertSee("/cursos/{$curso->id}/update")

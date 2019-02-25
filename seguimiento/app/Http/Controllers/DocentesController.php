@@ -8,8 +8,6 @@ use App\Models\Docente;
 
 class DocentesController extends Controller
 {
-    private $valiDocentes;
-
     public function index()
     {
         $docentes = Docente::orderBy('apellido','asc')->paginate(env('APP_PAGINATE',10));
