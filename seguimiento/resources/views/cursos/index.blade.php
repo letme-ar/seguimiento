@@ -25,7 +25,7 @@
                 <td>{{ $curso->materia->descripcion }}</td>
                 <td>{{ $curso->anio }}</td>
                 <td>{{ $curso->horario->descripcion }}</td>
-                <td>{{ $curso->ayudante->full_name }}</td>
+                <td>{{ $curso->ayudante->full_name ?? }}</td>
                 <td>
                     <a href="{{ 'cursos/edit/'.$curso->id."-".$curso->slug }}"><span class="oi oi-pencil" title="Editar" data-toggle="tooltip" data-placement="top"></span></a>
 
