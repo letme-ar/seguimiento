@@ -66,3 +66,8 @@ Route::get('/home', 'HomeController@index')->name('home');
 
 
 Route::get('change-password',['as' => 'change-password','uses' => 'ChangePasswordController@showChangePasswordForm']);
+
+Route::post('materias/{carrera_id?}/{materia_actual_id?}/',[
+    'as' => 'materias',
+    'uses' => 'CursosController@getMaterias'
+]);

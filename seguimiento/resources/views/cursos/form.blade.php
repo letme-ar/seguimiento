@@ -2,19 +2,19 @@
 
 @section('scripts')
 
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script>
 
         $(document).ready(function () {
 
             $('select[name=ayudante_id]').selectpicker();
 
-            $("#btnBack").click(function (){
-                window.location.href = '/cursos';
-            });
+            // $("#btnBack").click(function (){
+            //     window.location.href = '/cursos';
+            // });
 
 
         });
-
 
     </script>
 
@@ -23,33 +23,39 @@
 @section('content')
 
     @if(isset($curso))
-    <form method="post" action="/cursos/{{ $curso->id }}/update">
+        <form method="post" action="/cursos/{{ $curso->id }}/update" id="cursos">
+        <h1>Editar un curso</h1>
     @else
-    <form method="post" action="/cursos">
+        <form method="post" action="/cursos" id="cursos">
+        <h1>Crear un curso</h1>
     @endif
 
     @csrf
-
-        <h1>Crear un curso</h1>
-
         <div class="row">
 
             @include('components.select-template',[
                 'description' => 'Carrera',
                 'name' => 'carrera_id',
-                'selected' => isset($curso) ? $curso->materia->carrera->id : null,
+                'selected' => old('carrera_id') || isset($curso) ? $curso->materia->carrera->id : null,
                 'options' => ['' => 'Seleccione una carrera'] + $carreras,
-                'error' => $errors->first('carrera_id', ':message')
+                'error' => $errors->first('carrera_id', ':message'),
+                'attributes' => '@change=traerMaterias() v-model=carrera_id'
             ])
 
-            @include('components.select-template',[
-                'description' => 'Materia',
-                'name' => 'materia_id',
-                'selected' => isset($curso) ? $curso->materia_id : null,
-                'options' => ['' => 'Seleccione una materia'] + $materias,
-                'error' => $errors->first('materia_id', ':message'),
-                'attributes' => 'data-live-search="true"'
-            ])
+            <div class="col form-group">
+                <label for="materia_id">Materia</label>
+                <select name="materia_id" class="form-control">
+                    <option value="">Seleccione una materia</option>
+                    <option id="materia_id"
+                            v-for="materia in materias"
+                            :selected="materia_selected == materia.id"
+                            :value="materia.id">
+                            @{{ materia.descripcion }}
+                    </option>
+                </select>
+                <div class="alert-danger">{!! $errors->first('materia_id', ':message') !!}</div>
+
+            </div>
 
         </div>
 
@@ -87,16 +93,43 @@
                 'selected' => isset($curso) ? $curso->ayudante_id : null,
                 'options' => ['' => 'Seleccione un ayudante'] + $ayudantes,
                 'error' => $errors->first('ayudante_id', ':message'),
+                'class' => 'selectpicker',
                 'attributes' => 'data-live-search="true"'
             ])
 
         </div>
-        <div class="text-center">
-            <div class="card-footer text-muted">
-                <input type="button" id="btnBack" class="btn btn-danger" value="Volver">
-                <input type="submit" value="Guardar" class="btn btn-primary">
-            </div>
-        </div>
+
+        @include('components.botones')
+
     </form>
+    <script>
+
+
+        var app = new Vue({
+            el: '#cursos',
+            data: {
+                carrera_id: "{!! old('carrera_id', ($curso->materia->carrera_id) ?? '') !!}",
+                materia_actual_id: "{!! ($curso->materia_id) ?? '' !!}",
+                materia_selected: "{!! old('carrera_id', ($curso->materia_id) ?? '') !!}",
+                materias: []
+            },
+            methods: {
+                traerMaterias: function () {
+                    let theVue = this;
+                    axios.post('/materias/'+theVue.carrera_id+'/'+theVue.materia_actual_id).
+                        then((response) => (theVue.materias = response.data))
+                },
+                volver: function(){
+                    window.location.href = '/cursos';
+                }
+            },
+            created: function(){
+                if("{{ isset($curso) }}")
+                    this.traerMaterias()
+            }
+        })
+
+    </script>
+
 
 @endsection

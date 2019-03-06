@@ -25,4 +25,9 @@ class Docente extends Model
         return $this->attributes['nombre']." ".$this->attributes['apellido'];
     }
 
+    public function cursos()
+    {
+        return $this->hasMany(Curso::class);
+    }
+
 }

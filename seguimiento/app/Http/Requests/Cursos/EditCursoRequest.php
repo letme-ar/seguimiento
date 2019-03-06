@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use App\Models\Curso;
 use Illuminate\Foundation\Http\FormRequest;
 
-class EditCursoRequest extends FormRequest
+class EditCursoRequest extends CursoRequest
 {
     public function update(Curso $curso)
     {
