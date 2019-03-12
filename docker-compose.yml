@@ -33,6 +33,11 @@ services:
       - redisdata:/data
     networks:
       - seguimiento
+  selenium:
+    image: selenium/standalone-chrome
+    networks:
+      - seguimiento
+
 networks:
   seguimiento:
     driver: "bridge"
