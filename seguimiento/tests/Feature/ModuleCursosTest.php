@@ -232,7 +232,7 @@ class ModuleCursosTest extends TestCase
 
     }*/
 
-    /*private function dataRequired()
+    /* private function dataRequired()
     {
         $this->generateDocenteUserAndLogin();
 
